@@ -15,7 +15,6 @@
 using Microsoft.Azure.Commands.ResourceManager.Common.Tags;
 using Microsoft.Azure.Commands.Sql.FailoverGroup.Model;
 using Microsoft.Azure.Management.Sql.Models;
-using Microsoft.Azure.Management.Sql.LegacySdk.Models;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -157,18 +156,14 @@ namespace Microsoft.Azure.Commands.Sql.FailoverGroup.Cmdlet
         {
             string location = ModelAdapter.GetServerLocation(ResourceGroupName, ServerName);
             string readOnlyPolicy = MyInvocation.BoundParameters.ContainsKey("AllowReadOnlyFailoverToPrimary") ? AllowReadOnlyFailoverToPrimary.ToString() : AllowReadOnlyFailoverToPrimary.Disabled.ToString();
-            List<FailoverGroupPartnerServer> serversToAdd = new List<FailoverGroupPartnerServer>();
+            List<PartnerInfo> serversToAdd = new List<PartnerInfo>();
             FailoverGroupReadOnlyEndpoint failoverGroupReadOnlyEndpoint = null;
             FailoverGroupReadWriteEndpoint failoverGroupReadWriteEndpoint = null;
             if (MyInvocation.BoundParameters.ContainsKey("PartnerServerList"))
             {
                 foreach (string serverName in PartnerServerList)
                 {
-                    serversToAdd.Add(new FailoverGroupPartnerServer()
-                    {
-                        Id = serverName,
-                        ReplicationRole = Management.Sql.LegacySdk.Models.ReplicationRole.Secondary
-                    });
+                    serversToAdd.Add(new PartnerInfo(id: serverName, location, ReplicationRole.Secondary.ToString()));
                 }
                 if (MyInvocation.BoundParameters.ContainsKey("ReadOnlyEndpointTargetServer"))
                 {

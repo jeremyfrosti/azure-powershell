@@ -19,7 +19,6 @@ using Microsoft.Azure.Commands.Sql.ElasticPool.Services;
 using Microsoft.Azure.Commands.Sql.ReplicationLink.Services;
 using Microsoft.Azure.Commands.Sql.Server.Adapter;
 using Microsoft.Azure.Commands.Sql.Services;
-using Microsoft.Azure.Management.Sql.LegacySdk.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -302,19 +301,7 @@ namespace Microsoft.Azure.Commands.Sql.Database.Services
         /// <param name="serverName">The name of the Azure Sql Database Server</param>
         /// <param name="database">The service response</param>
         /// <returns>The converted model</returns>
-        public static AzureSqlDatabaseModel CreateDatabaseModelFromResponse(string resourceGroup, string serverName, Management.Sql.LegacySdk.Models.Database database)
-        {
-            return new AzureSqlDatabaseModel(resourceGroup, serverName, database);
-        }
-
-        /// <summary>
-        /// Converts the response from the service to a powershell database object
-        /// </summary>
-        /// <param name="resourceGroup">The resource group the server is in</param>
-        /// <param name="serverName">The name of the Azure Sql Database Server</param>
-        /// <param name="database">The service response</param>
-        /// <returns>The converted model</returns>
-        public static AzureSqlDatabaseModelExpanded CreateExpandedDatabaseModelFromResponse(string resourceGroup, string serverName, Management.Sql.LegacySdk.Models.Database database)
+        public static AzureSqlDatabaseModelExpanded CreateExpandedDatabaseModelFromResponse(string resourceGroup, string serverName, Management.Sql.Models.Database database)
         {
             return new AzureSqlDatabaseModelExpanded(resourceGroup, serverName, database);
         }

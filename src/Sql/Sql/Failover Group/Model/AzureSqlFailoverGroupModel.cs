@@ -12,7 +12,6 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
-using Microsoft.Azure.Management.Sql.LegacySdk.Models;
 using Microsoft.Azure.Management.Sql.Models;
 using System.Collections.Generic;
 using System;
@@ -44,12 +43,12 @@ namespace Microsoft.Azure.Commands.Sql.FailoverGroup.Model
         /// <summary>
         /// Gets or sets the read-write endpoint
         /// </summary>
-        public ReadWriteEndpoint FailoverGroupReadWriteEndpoint { get; set; }
+        public FailoverGroupReadWriteEndpoint FailoverGroupReadWriteEndpoint { get; set; }
 
         /// <summary>
         /// Gets or sets the read-only endpoint (legacy field)
         /// </summary>
-        public ReadOnlyEndpoint FailoverGroupReadOnlyEndpoint { get; set; }
+        public FailoverGroupReadOnlyEndpoint FailoverGroupReadOnlyEndpoint { get; set; }
 
         /// <summary>
         /// Gets or sets the read-only endpoint.
@@ -66,7 +65,7 @@ namespace Microsoft.Azure.Commands.Sql.FailoverGroup.Model
         /// <summary>
         /// Gets or sets the partner servers
         /// </summary>
-        public IList<FailoverGroupPartnerServer> PartnerServers { get; set; }
+        public IList<PartnerInfo> PartnerServers { get; set; }
 
         /// <summary>
         /// Gets or sets the Id of partner subscription id
@@ -156,26 +155,26 @@ namespace Microsoft.Azure.Commands.Sql.FailoverGroup.Model
         }
 
         /// <summary>
-        /// Construct AzureSqlServerfailoverGroupModel from Management.Sql.LegacySdk.Models.FailoverGroup object
+        /// Construct AzureSqlServerfailoverGroupModel from Management.Sql.Models.FailoverGroup object
         /// </summary>
         /// <param name="resourceGroupName">Resource group</param>
         /// <param name="serverName">Server name</param>
         /// <param name="failoverGroupName">The name of the Azure Sql Database FailoverGroup</param>
         /// <param name="failoverGroup">Recommended Action object</param>
-        public AzureSqlFailoverGroupModel(string resourceGroupName, string serverName, string failoverGroupName, Management.Sql.LegacySdk.Models.FailoverGroup failoverGroup)
+        public AzureSqlFailoverGroupModel(string resourceGroupName, string serverName, string failoverGroupName, Management.Sql.Models.FailoverGroup failoverGroup)
         {
             ResourceGroupName = resourceGroupName;
             ServerName = serverName;
             FailoverGroupName = failoverGroup.Name;
             Id = failoverGroup.Id;
             Location = failoverGroup.Location;
-            ReadWriteFailoverPolicy = failoverGroup.Properties.ReadWriteEndpoint.FailoverPolicy;
-            ReadOnlyFailoverPolicy = failoverGroup.Properties.ReadOnlyEndpoint.FailoverPolicy;
-            FailoverWithDataLossGracePeriodHours = failoverGroup.Properties.ReadWriteEndpoint.FailoverWithDataLossGracePeriodMinutes / 60;
-            PartnerServers = failoverGroup.Properties.PartnerServers;
-            Databases = failoverGroup.Properties.Databases;
-            ReplicationRole = failoverGroup.Properties.ReplicationRole;
-            ReplicationState = failoverGroup.Properties.ReplicationState;
+            ReadWriteFailoverPolicy = failoverGroup.ReadWriteEndpoint.FailoverPolicy;
+            ReadOnlyFailoverPolicy = failoverGroup.ReadOnlyEndpoint.FailoverPolicy;
+            FailoverWithDataLossGracePeriodHours = failoverGroup.ReadWriteEndpoint.FailoverWithDataLossGracePeriodMinutes / 60;
+            PartnerServers = failoverGroup.PartnerServers;
+            Databases = failoverGroup.Databases;
+            ReplicationRole = failoverGroup.ReplicationRole;
+            ReplicationState = failoverGroup.ReplicationState;
         }
     }
 }

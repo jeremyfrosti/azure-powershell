@@ -15,8 +15,6 @@
 using Microsoft.Azure.Commands.Common.Authentication;
 using Microsoft.Azure.Commands.Common.Authentication.Abstractions;
 using Microsoft.Azure.Management.Sql;
-using Microsoft.Azure.Management.Sql.LegacySdk;
-using Microsoft.Azure.Management.Sql.LegacySdk.Models;
 using System;
 using System.Collections.Generic;
 using Microsoft.Azure.Commands.Sql.Database.Model;
@@ -36,7 +34,7 @@ namespace Microsoft.Azure.Commands.Sql.Database.Services
         /// <summary>
         /// The Sql client to be used by this end points communicator
         /// </summary>
-        private static Management.Sql.LegacySdk.SqlManagementClient LegacySqlClient { get; set; }
+        private static SqlManagementClient SqlClient { get; set; }
 
         /// <summary>
         /// Gets or set the Azure subscription
@@ -63,7 +61,6 @@ namespace Microsoft.Azure.Commands.Sql.Database.Services
             if (context?.Subscription != Subscription)
             {
                 Subscription = context?.Subscription;
-                LegacySqlClient = null;
             }
         }
 
@@ -102,9 +99,9 @@ namespace Microsoft.Azure.Commands.Sql.Database.Services
         /// <summary>
         /// Gets the Azure Sql Database expanded additional details.
         /// </summary>
-        public Management.Sql.LegacySdk.Models.Database GetExpanded(string resourceGroupName, string serverName, string databaseName)
+        public Management.Sql.Models.Database GetExpanded(string resourceGroupName, string serverName, string databaseName)
         {
-            return GetLegacySqlClient().Databases.GetExpanded(resourceGroupName, serverName, databaseName, ExpandDatabase).Database;
+            return GetCurrentSqlClient().Databases.Get(resourceGroupName, serverName, databaseName, ExpandDatabase);
         }
 
         /// <summary>
@@ -129,9 +126,19 @@ namespace Microsoft.Azure.Commands.Sql.Database.Services
         /// <summary>
         /// Lists Azure Sql Databases expanded with additional details.
         /// </summary>
-        public IList<Management.Sql.LegacySdk.Models.Database> ListExpanded(string resourceGroupName, string serverName)
+        public IList<Management.Sql.Models.Database> ListExpanded(string resourceGroupName, string serverName)
         {
-            return GetLegacySqlClient().Databases.ListExpanded(resourceGroupName, serverName, ExpandDatabase).Databases;
+            List<Management.Sql.Models.Database> resultsList = new List<Management.Sql.Models.Database>();
+            var result = GetCurrentSqlClient().Databases.ListByServer(resourceGroupName, serverName);
+            resultsList.AddRange(result);
+
+            while (!string.IsNullOrEmpty(result.NextPageLink))
+            {
+                result = GetCurrentSqlClient().Databases.ListByServerNext(result.NextPageLink);
+                resultsList.AddRange(result);
+            }
+            
+            return resultsList;
         }
 
         /// <summary>
@@ -209,21 +216,6 @@ namespace Microsoft.Azure.Commands.Sql.Database.Services
                 sqlClient.SubscriptionId = subscriptionId;
             }
             return sqlClient;
-        }
-
-        /// <summary>
-        /// Retrieve the SQL Management client for the currently selected subscription, adding the session and request
-        /// id tracing headers for the current cmdlet invocation.
-        /// </summary>
-        /// <returns>The SQL Management client for the currently selected subscription.</returns>
-        private Management.Sql.LegacySdk.SqlManagementClient GetLegacySqlClient()
-        {
-            // Get the SQL management client for the current subscription
-            if (LegacySqlClient == null)
-            {
-                LegacySqlClient = AzureSession.Instance.ClientFactory.CreateClient<Management.Sql.LegacySdk.SqlManagementClient>(Context, AzureEnvironment.Endpoint.ResourceManager);
-            }
-            return LegacySqlClient;
         }
     }
 }

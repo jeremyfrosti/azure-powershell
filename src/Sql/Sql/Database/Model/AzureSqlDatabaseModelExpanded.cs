@@ -21,23 +21,13 @@ namespace Microsoft.Azure.Commands.Sql.Database.Model
     public class AzureSqlDatabaseModelExpanded : AzureSqlDatabaseModel
     {
         /// <summary>
-        /// Service tier advisor for this database
-        /// </summary>
-        public Management.Sql.LegacySdk.Models.ServiceTierAdvisorProperties ServiceTierAdvisor { get; set; }
-
-        /// <summary>
-        /// Construct AzureSqlDatabaseModelExpanded from Management.Sql.LegacySdk.Models.Database object
+        /// Construct AzureSqlDatabaseModelExpanded from Management.Sql.Models.Database object
         /// </summary>
         /// <param name="resourceGroup">Resource group</param>
         /// <param name="serverName">Server name</param>
         /// <param name="database">Database object</param>
-        public AzureSqlDatabaseModelExpanded(string resourceGroup, string serverName, Management.Sql.LegacySdk.Models.Database database) : base(resourceGroup, serverName, database)
+        public AzureSqlDatabaseModelExpanded(string resourceGroup, string serverName, Management.Sql.Models.Database database) : base(resourceGroup, serverName, database)
         {
-            if (database.Properties.ServiceTierAdvisors != null
-                && database.Properties.ServiceTierAdvisors.Count > 0)
-            {
-                ServiceTierAdvisor = database.Properties.ServiceTierAdvisors[0].Properties;
-            }
         }
     }
 }
