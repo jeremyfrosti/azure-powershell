@@ -19,6 +19,17 @@
 -->
 ## Upcoming Release
 
+## Version 3.0.1
+* Deprecated the `-OverwriteLifeCycle` parameter on `Edit-AzDataProtectionPolicyRetentionRuleClientObject`
+    - The parameter will be removed in an upcoming release; existing retention rule lifecycles are replaced in place by default
+* Updated the retention rule `-Name` help messages in `Edit-AzDataProtectionPolicyRetentionRuleClientObject` for clarity
+
+## Version 3.0.0
+* Changed retention rule to require `-Name Default_OperationalStore`
+* Added `RenameTo` to restore request
+* [Upgraded code generator](https://go.microsoft.com/fwlink/?linkid=2340249)
+* Added Cosmos DB protection support
+
 ## Version 2.10.1
 * Fixed non-ASCII U+2013 characters failed module import in WindowsPowerShell
 
